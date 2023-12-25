@@ -6,15 +6,11 @@ const postSchema = mongoose.Schema({
   creator: String,
   tags: [String],
   selectedFile: String,
-  isImage: Boolean,
   likeCount: {
     type: Number,
     default: 0
   },
-  createdAt: {
-    type: Date,
-    default: new Date()
-  }
+  createdAt: Date
 });
 
 const PostMessage = mongoose.model("PostMessage", postSchema);

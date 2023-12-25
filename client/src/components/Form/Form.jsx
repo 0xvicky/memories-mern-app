@@ -1,11 +1,11 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import useStyles from "./style";
 import {TextField, Button, Typography, Paper} from "@material-ui/core";
 import FileBase64 from "react-file-base64";
 import {useDispatch} from "react-redux";
-import {createPost} from "../../actions/posts";
+import {createPost, updatePost} from "../../actions/posts";
 
-const Form = () => {
+const Form = ({currentId, setCurrentId, editPost}) => {
   const initialPostData = {
     creator: "",
     title: "",
@@ -18,9 +18,27 @@ const Form = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    console.log("update triggereddd effect  ");
+    for (let key in editPost) {
+      console.log(key);
+      if (postData.hasOwnProperty(key)) {
+        setPostData({...postData, [key]: editPost[key]});
+      }
+    }
+  }, [currentId, editPost]);
+
   const handleSubmit = e => {
     e.preventDefault();
-    dispatch(createPost(postData));
+
+    // setPostData(postData);
+    if (currentId) {
+      console.log("update triggered !!");
+      console.log(editPost);
+      dispatch(updatePost(currentId, postData));
+    } else {
+      dispatch(createPost(postData));
+    }
     setPostData(initialPostData);
   };
 
@@ -32,7 +50,9 @@ const Form = () => {
         noValidate
         className={`${classes.form} ${classes.root}`}
         onSubmit={handleSubmit}>
-        <Typography variant='h6'>Creating a Memory</Typography>
+        <Typography variant='h6'>
+          {currentId ? "Edit the Memory" : "Creating a Memory"}
+        </Typography>
         <TextField
           name='Creator'
           variant='outlined'
