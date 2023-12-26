@@ -2,15 +2,17 @@ import React from "react";
 import Post from "./Post/Post";
 import {v4 as uuidv4} from "uuid";
 import {CircularProgress, Grid} from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 
 import {useSelector} from "react-redux";
 import useStyles from "./style";
-const Posts = ({setCurrentId, setEditPost}) => {
+const Posts = ({setCurrentId}) => {
   const classes = useStyles();
   const posts = useSelector(state => state.posts);
+  // console.log(posts);
 
   return !posts.length ? (
-    <CircularProgress />
+    <Typography variant='h4'>No Post Found !!</Typography>
   ) : (
     <Grid
       className={classes.mainContainer}
@@ -26,7 +28,6 @@ const Posts = ({setCurrentId, setEditPost}) => {
           <Post
             post={post}
             setCurrentId={setCurrentId}
-            setEditPost={setEditPost}
           />
         </Grid>
       ))}

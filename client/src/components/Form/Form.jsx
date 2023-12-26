@@ -4,41 +4,45 @@ import {TextField, Button, Typography, Paper} from "@material-ui/core";
 import FileBase64 from "react-file-base64";
 import {useDispatch} from "react-redux";
 import {createPost, updatePost} from "../../actions/posts";
+import {useSelector} from "react-redux";
 
-const Form = ({currentId, setCurrentId, editPost}) => {
+const Form = ({currentId, setCurrentId}) => {
   const initialPostData = {
     creator: "",
     title: "",
     message: "",
-    tags: "",
+    tags: [],
     selectedFile: ""
   };
   const [postData, setPostData] = useState(initialPostData);
 
   const classes = useStyles();
   const dispatch = useDispatch();
+  const post = useSelector(state =>
+    currentId ? state.posts.find(p => p._id === currentId) : null
+  );
 
+  //To update the post
   useEffect(() => {
-    console.log("update triggereddd effect  ");
-    for (let key in editPost) {
-      console.log(key);
-      if (postData.hasOwnProperty(key)) {
-        setPostData({...postData, [key]: editPost[key]});
-      }
+    if (post) {
+      setPostData(post);
     }
-  }, [currentId, editPost]);
+  }, [currentId]);
 
   const handleSubmit = e => {
     e.preventDefault();
 
-    // setPostData(postData);
+    // setPostData(postData);z
     if (currentId) {
-      console.log("update triggered !!");
-      console.log(editPost);
       dispatch(updatePost(currentId, postData));
     } else {
       dispatch(createPost(postData));
     }
+    clear();
+  };
+
+  const clear = () => {
+    setCurrentId(null);
     setPostData(initialPostData);
   };
 
@@ -90,7 +94,13 @@ const Form = ({currentId, setCurrentId, editPost}) => {
           fullWidth
           value={postData.tags}
           onChange={e => {
-            setPostData({...postData, tags: e.target.value});
+            const inputTags = e.target.value;
+            const arrTags = inputTags.split(",").map(tag => tag.trim()); // Split tags by comma and remove extra spaces
+
+            setPostData({
+              ...postData,
+              tags: arrTags
+            });
           }}
         />
 
@@ -115,9 +125,7 @@ const Form = ({currentId, setCurrentId, editPost}) => {
           variant='contained'
           color='secondary'
           size='small'
-          onClick={() => {
-            setPostData(initialPostData);
-          }}
+          onClick={clear}
           fullWidth>
           Clear
         </Button>

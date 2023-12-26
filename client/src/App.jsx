@@ -10,16 +10,15 @@ import useStyles from "./style";
 
 const App = () => {
   const [currentId, setCurrentId] = useState(null);
-  const [editPost, setEditPost] = useState(null);
 
   const classes = useStyles();
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getPosts());
-  }, [dispatch]);
+  }, [dispatch, currentId]);
 
-  console.log(currentId);
+  // console.log(currentId);
   return (
     <Container maxWidth='lg'>
       <AppBar
@@ -50,10 +49,7 @@ const App = () => {
               item
               xs={12}
               sm={7}>
-              <Posts
-                setCurrentId={setCurrentId}
-                setEditPost={setEditPost}
-              />
+              <Posts setCurrentId={setCurrentId} />
             </Grid>
             <Grid
               item
@@ -62,7 +58,6 @@ const App = () => {
               <Form
                 currentId={currentId}
                 setCurrentId={setCurrentId}
-                editPost={editPost}
               />
             </Grid>
           </Grid>

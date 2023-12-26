@@ -13,9 +13,20 @@ import {AiFillDelete} from "react-icons/ai";
 import {HiDotsHorizontal} from "react-icons/hi";
 // import moment from "moment";
 import {getTimeAgo} from "../../../utils/elapsedTime";
+import {deletePost, likePost} from "../../../actions/posts";
+import {useDispatch} from "react-redux";
 
-const Post = ({post, setCurrentId, setEditPost}) => {
+const Post = ({post, setCurrentId}) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const deletePostFunc = () => {
+    dispatch(deletePost(post._id));
+  };
+
+  const likePostFunc = () => {
+    dispatch(likePost(post._id));
+  };
   return (
     <Card className={classes.card}>
       <CardMedia
@@ -33,7 +44,6 @@ const Post = ({post, setCurrentId, setEditPost}) => {
           size='small'
           onClick={() => {
             setCurrentId(post._id);
-            setEditPost(post);
           }}>
           <HiDotsHorizontal fontSize={28} />
         </Button>
@@ -45,10 +55,16 @@ const Post = ({post, setCurrentId, setEditPost}) => {
           {post.tags.map(tag => `#${tag}`)}
         </Typography>
       </div>
+      <Typography
+        className={classes.title}
+        variant='h6'
+        gutterBottom>
+        {post.title}
+      </Typography>
       <CardContent>
         <Typography
           className={classes.title}
-          variant='h5'
+          variant='h6'
           gutterBottom>
           {post.message}
         </Typography>
@@ -57,7 +73,7 @@ const Post = ({post, setCurrentId, setEditPost}) => {
         <Button
           size='small'
           color='primary'
-          onClick={() => {}}>
+          onClick={likePostFunc}>
           <MdThumbUp fontSize={28} />
           Like
           {post.likeCount}
@@ -65,7 +81,7 @@ const Post = ({post, setCurrentId, setEditPost}) => {
         <Button
           size='small'
           color='primary'
-          onClick={() => {}}>
+          onClick={deletePostFunc}>
           <AiFillDelete fontSize={28} />
           Delete
         </Button>
