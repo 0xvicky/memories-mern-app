@@ -1,14 +1,19 @@
 import React, {useState} from "react";
 import {Avatar, Button, Paper, Grid, Typography, Container} from "@material-ui/core";
 import useStyles from "./style";
+import {GoogleOAuthProvider, GoogleLogin} from "@react-oauth/google";
 import {IoLockClosedOutline} from "react-icons/io5";
 import Input from "./Input";
+import {FcGoogle} from "react-icons/fc";
+import {jwtDecode} from "jwt-decode";
+import {useNavigate} from "react-router-dom";
 
 const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isSignup, setIsSignUp] = useState(false);
 
   const classes = useStyles();
-  const isSignup = false;
+  const navigate = useNavigate();
 
   const handleSubmit = () => {};
 
@@ -16,6 +21,16 @@ const Auth = () => {
 
   const handleShowPassword = () => {
     setShowPassword(prev => !prev);
+  };
+
+  const switchMode = () => {
+    setIsSignUp(prev => !prev);
+  };
+
+  const handleSignIn = res => {
+    const user_info = jwtDecode(res.credential);
+    localStorage.setItem("user", JSON.stringify(user_info));
+    navigate("/");
   };
 
   return (
@@ -34,7 +49,7 @@ const Auth = () => {
           onSubmit={handleSubmit}>
           <Grid
             container
-            spacing={1}>
+            spacing={2}>
             {isSignup && (
               <>
                 <Input
@@ -45,10 +60,11 @@ const Auth = () => {
                   half
                 />
                 <Input
-                  name='firstName'
-                  label='First Name'
+                  name='lastName'
+                  label='Last Name'
                   handleChange={handleChange}
                   autofocus
+                  half
                 />
               </>
             )}
@@ -74,6 +90,22 @@ const Auth = () => {
               />
             )}
           </Grid>
+          <Grid
+            container
+            justifyContent='center'
+            alignItems='center'
+            spacing={2}>
+            <GoogleOAuthProvider clientId='458847142767-re2lqg9i3jk57atap59lar4aatlkrahc.apps.googleusercontent.com'>
+              <GoogleLogin
+                onSuccess={resCred => {
+                  handleSignIn(resCred);
+                }}
+                onError={() => {
+                  console.log("Login Failed");
+                }}
+              />
+            </GoogleOAuthProvider>
+          </Grid>
           <Button
             type='submit'
             fullWidth
@@ -82,6 +114,17 @@ const Auth = () => {
             className={classes.submit}>
             {isSignup ? "Sign Up" : "Sign In"}
           </Button>
+          <Grid
+            container
+            justifyContent='center'>
+            <Grid item>
+              <Button onClick={switchMode}>
+                {isSignup
+                  ? "Already have an account? Sign In"
+                  : "Don't have an account, SignUp"}
+              </Button>
+            </Grid>
+          </Grid>
         </form>
       </Paper>
     </Container>

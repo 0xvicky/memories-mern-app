@@ -20,7 +20,7 @@ const Input = ({
 }) => {
   return (
     <Grid
-      xs={12}
+      xs={10}
       sm={half ? 6 : 12}
       spacing={2}>
       <TextField
@@ -28,6 +28,7 @@ const Input = ({
         label={label}
         onChange={handleChange}
         variant='outlined'
+        margin='normal'
         fullWidth
         required
         type={type}
